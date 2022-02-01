@@ -18,6 +18,27 @@
     <div class="container">
       <div class="header"></div>
       <h1 class="heading">Cohatch Google Map</h1>
+      <div class="controls">
+        <div class="ui fluid icon input">
+          <input type="text" placeholder="Search a place..." />
+          <i class="search icon"></i>
+        </div>
+
+        <select name="skills" class="ui fluid dropdown">
+          <option value="">Place Category</option>
+          <option value="shop">Shop</option>
+          <option value="restaurant">Restaurant</option>
+          <option value="hospital">Hospital</option>
+        </select>
+
+        <div class="ui checkbox">
+          <input type="checkbox" name="example" />
+          <label>Near me</label>
+        </div>
+      </div>
+      <div class="map-container">
+        <div id="map"></div>
+      </div>
     </div>
   </body>
 </html>

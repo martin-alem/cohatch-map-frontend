@@ -21,3 +21,34 @@ body {
 .heading {
   text-align: center;
 }
+
+.controls {
+  padding: 2rem;
+  width: 100%;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.controls .input {
+  width: 45%;
+}
+
+.controls .dropdown {
+  width: 40%;
+}
+
+.controls .checkbox {
+  width: 10%;
+}
+
+.map-container {
+  width: 100%;
+  padding: 2rem;
+}
+
+.map-container #map {
+  width: 100%;
+  height: 100%;
+}
