@@ -11,8 +11,8 @@ import { makeAPIRequest, getSelectedValue, getCurrentPosition, pickRandom, handl
   let category = "shop";
 
   //current position
-  let longitude = 0;
-  let latitude = 0;
+  let longitude = null;
+  let latitude = null;
 
   let places = [];
 
@@ -44,7 +44,10 @@ import { makeAPIRequest, getSelectedValue, getCurrentPosition, pickRandom, handl
    * Uses the category value.
    */
   async function handleSubmit() {
-    let endpoint = `place?query=${category}&location=${latitude},${longitude}&type=${category}`;
+    let endpoint = `place?query=${category}&type=${category}`;
+    if (latitude && longitude) {
+      endpoint = `place?query=${category}&location=${latitude},${longitude}&type=${category}`;
+    }
     const response = await makeAPIRequest(endpoint);
     places = await handleResponse(response, numberOfMarkups, false);
   }
@@ -69,7 +72,10 @@ import { makeAPIRequest, getSelectedValue, getCurrentPosition, pickRandom, handl
    * uses the default search variables
    */
   async function init() {
-    const endpoint = `place?query=${category}&location=${latitude},${longitude}&type=${category}`;
+    let endpoint = `place?query=${category}&type=${category}`;
+    if (latitude && longitude) {
+      endpoint = `place?query=${category}&location=${latitude},${longitude}&type=${category}`;
+    }
     const response = await makeAPIRequest(endpoint);
     places = await handleResponse(response, numberOfMarkups, false);
   }
@@ -81,6 +87,9 @@ import { makeAPIRequest, getSelectedValue, getCurrentPosition, pickRandom, handl
       longitude = position.coords.longitude;
       init();
     },
-    error => console.error(error)
+    error => {
+      init();
+      console.error(error);
+    }
   );
 })();
