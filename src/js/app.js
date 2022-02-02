@@ -1,4 +1,4 @@
-import { makeAPIRequest, getSelectedValue, getCurrentPosition, renderMap, filterPlaces, pickRandom } from "./util.js";
+import { makeAPIRequest, getSelectedValue, getCurrentPosition, pickRandom, handleResponse } from "./util.js";
 
 (function () {
   const numberOfMarkupInput = document.querySelector("#markup");
@@ -39,64 +39,39 @@ import { makeAPIRequest, getSelectedValue, getCurrentPosition, renderMap, filter
 
   searchButton.addEventListener("click", handleSubmit);
 
+  /**
+   * Handles when the user clicks the search button.
+   * Uses the category value.
+   */
   async function handleSubmit() {
     let endpoint = `place?query=${category}&location=${latitude},${longitude}&type=${category}`;
-
     const response = await makeAPIRequest(endpoint);
-    if (response.ok) {
-      const jsonResponse = await response.json();
-      const { results } = jsonResponse.payload;
-      const arrayOfCoordinates = filterPlaces(results);
-      places = arrayOfCoordinates;
-      if (numberOfMarkups === "single") {
-        renderMap([arrayOfCoordinates[0]]);
-      } else {
-        renderMap(arrayOfCoordinates);
-      }
-    } else {
-      console.error(response);
-    }
+    places = await handleResponse(response, numberOfMarkups, false);
   }
 
+  /**
+   * Executes when the user select a near me option
+   * It uses the current search places by picking a random
+   * And determining the location of the other places
+   */
   async function handleFilterChange() {
     const radius = 16093;
     const { location } = pickRandom(places);
     const { lat: latitude, lng: longitude } = location;
     const endpoint = `place?query=${category}&location=${latitude},${longitude}&type=${category}&radius=${radius}`;
-
     const response = await makeAPIRequest(endpoint);
-    if (response.ok) {
-      const jsonResponse = await response.json();
-      const { results } = jsonResponse.payload;
-      const arrayOfCoordinates = filterPlaces(results);
-      places = arrayOfCoordinates;
-      if (numberOfMarkups === "single") {
-        renderMap([arrayOfCoordinates[0]]);
-      } else {
-        renderMap(arrayOfCoordinates);
-      }
-    } else {
-      console.error(response);
-    }
+    places = await handleResponse(response, numberOfMarkups, true);
+    nearMeInput.selectedIndex = 0;
   }
 
+  /**
+   * Executes on application load.
+   * uses the default search variables
+   */
   async function init() {
     const endpoint = `place?query=${category}&location=${latitude},${longitude}&type=${category}`;
-
     const response = await makeAPIRequest(endpoint);
-    if (response.ok) {
-      const jsonResponse = await response.json();
-      const { results } = jsonResponse.payload;
-      const arrayOfCoordinates = filterPlaces(results);
-      places = arrayOfCoordinates;
-      if (numberOfMarkups === "single") {
-        renderMap([arrayOfCoordinates[0]]);
-      } else {
-        renderMap(arrayOfCoordinates);
-      }
-    } else {
-      console.error(response);
-    }
+    places = await handleResponse(response, numberOfMarkups, false);
   }
 
   //Get users location on application load
@@ -104,7 +79,7 @@ import { makeAPIRequest, getSelectedValue, getCurrentPosition, renderMap, filter
     position => {
       latitude = position.coords.latitude;
       longitude = position.coords.longitude;
-      // init();
+      init();
     },
     error => console.error(error)
   );
