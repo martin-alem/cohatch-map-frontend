@@ -15,7 +15,7 @@ export const getSelectedValue = e => {
  * @returns a promise
  */
 export const makeAPIRequest = endpoint => {
-  const url = `http://localhost:8080/api/v1/${endpoint}`;
+  const url = `https://cohatch-map-frontend-q6o7v.ondigitalocean.app/api/v1/${endpoint}`;
   const init = {
     headers: {
       Accept: "application/json",
